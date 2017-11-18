@@ -12,4 +12,5 @@ public interface LocalSource {
 
     Observable<List<User>> getUsers(long page);
 
+    void deleteAll();
 }

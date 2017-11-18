@@ -65,4 +65,9 @@ public abstract class BaseRecyclerViewAdapter<T, VH extends BaseViewHolder<T>>
         items.addAll(itemsToAdd);
         notifyItemRangeInserted(positionToInset, itemsToAdd.size());
     }
+
+    public void clearAll() {
+        items.clear();
+        notifyDataSetChanged();
+    }
 }

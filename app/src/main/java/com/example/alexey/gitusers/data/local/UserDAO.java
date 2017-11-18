@@ -22,4 +22,6 @@ public interface UserDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<User> items);
 
+    @Query("DELETE FROM users")
+    void deleteAll();
 }

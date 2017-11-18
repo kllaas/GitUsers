@@ -12,6 +12,6 @@ import com.example.alexey.gitusers.data.entity.local.User;
 @Database(entities = {User.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
-    public abstract UserDAO artistsDAO();
+    public abstract UserDAO usersDAO();
 
 }

@@ -20,11 +20,11 @@ import io.reactivex.disposables.CompositeDisposable;
 public class UserListPresenter<V extends UserListMvpContract.View> extends BasePresenterImpl<V>
         implements UserListMvpContract.Presenter<V> {
 
-    private static final int PAGE_START = 1;
+    private static final int ID_START = 1;
 
     private boolean isLoading = false;
 
-    private long lastId = PAGE_START;
+    private long lastId = ID_START;
 
 
     private ScrollListener scrollListener;
@@ -43,20 +43,7 @@ public class UserListPresenter<V extends UserListMvpContract.View> extends BaseP
     protected void onViewPrepared() {
         scrollListener = new PaginationScrollListener(getView().getLayoutManager());
 
-        loadUsers(new UserLoadCallback() {
-            @Override
-            public void onSuccess(List<User> users) {
-                if (users == null || users.size() == 0) return;
-
-                lastId = users.get(users.size() - 1).getId() + 1;
-                adapter.updateDataSet(users);
-            }
-
-            @Override
-            public void onFailure(String message) {
-                getView().showFailureMessage(message);
-            }
-        });
+        loadUsers(firstLoadedCallback);
     }
 
     private void loadUsers(UserLoadCallback callback) {
@@ -71,7 +58,14 @@ public class UserListPresenter<V extends UserListMvpContract.View> extends BaseP
 
     @Override
     public void refresh() {
+        lastId = ID_START;
 
+        adapter.clearAll();
+        getCompositeDisposable().add(getRepository()
+                .refresh(lastId)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(users -> firstLoadedCallback.onSuccess(users)));
     }
 
     private void loadNextPage() {
@@ -103,6 +97,21 @@ public class UserListPresenter<V extends UserListMvpContract.View> extends BaseP
     public RecyclerView.OnScrollListener getOnScrollListener() {
         return scrollListener;
     }
+
+    private UserLoadCallback firstLoadedCallback = new UserLoadCallback() {
+        @Override
+        public void onSuccess(List<User> users) {
+            if (users == null || users.size() == 0) return;
+
+            lastId = users.get(users.size() - 1).getId() + 1;
+            adapter.updateDataSet(users);
+        }
+
+        @Override
+        public void onFailure(String message) {
+            getView().showFailureMessage(message);
+        }
+    };
 
     private class PaginationScrollListener extends ScrollListener {
 

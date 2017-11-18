@@ -3,7 +3,6 @@ package com.example.alexey.gitusers.di.modules;
 import android.app.Application;
 import android.arch.persistence.room.Room;
 
-import com.example.alexey.gitusers.BuildConfig;
 import com.example.alexey.gitusers.data.entity.mapper.UserDeserializer;
 import com.example.alexey.gitusers.data.entity.remote.UserRemote;
 import com.example.alexey.gitusers.data.local.AppDatabase;
@@ -21,6 +20,7 @@ import dagger.Provides;
 import retrofit2.Retrofit;
 
 @Module
+@Singleton
 public class AppModule {
 
     private Application application;
@@ -38,13 +38,11 @@ public class AppModule {
     }
 
     @Provides
-    @Singleton
     SchedulerProvider provideAppSchedulerProvider() {
         return new AppSchedulerProvider();
     }
 
     @Provides
-    @Singleton
     Gson provideGson() {
         return new GsonBuilder()
                 .registerTypeAdapter(UserRemote.class, new UserDeserializer())
@@ -52,24 +50,20 @@ public class AppModule {
     }
 
     @Provides
-    @Singleton
     Retrofit provideRetrofit() {
         return new Retrofit.Builder().build();
     }
 
-    @Singleton
     @Provides
     AppDatabase provideRoomDatabase() {
         return appDatabase;
     }
 
-    @Singleton
     @Provides
     UserDAO provideArtistsDao(AppDatabase db) {
-        return db.artistsDAO();
+        return db.usersDAO();
     }
 
-    @Singleton
     @Provides
     NetworkUtils provideNetworkUtils() {
         return new NetworkUtils(application);

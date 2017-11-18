@@ -1,7 +1,5 @@
 package com.example.alexey.gitusers.data;
 
-import android.util.Log;
-
 import com.example.alexey.gitusers.data.entity.local.User;
 import com.example.alexey.gitusers.data.local.LocalRepository;
 import com.example.alexey.gitusers.data.remote.RemoteRepository;
@@ -12,7 +10,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 
 public class Repository {
 
@@ -56,4 +53,11 @@ public class Repository {
                 .subscribeOn(schedulerProvider.computation());
     }
 
+    public Observable<List<User>> refresh(long id) {
+        return Observable.fromCallable(() -> {
+            localRepository.deleteAll();
+            return id;
+        }).observeOn(schedulerProvider.io())
+                .flatMap(var -> getRemoteUsersObservable(id));
+    }
 }

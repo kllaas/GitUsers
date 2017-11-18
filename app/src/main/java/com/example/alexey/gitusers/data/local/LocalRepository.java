@@ -21,13 +21,18 @@ public class LocalRepository implements LocalSource {
 
     @Override
     public void saveUsers(List<User> users) {
-        database.artistsDAO().insertAll(users);
+        database.usersDAO().insertAll(users);
     }
 
     @Override
     public Observable<List<User>> getUsers(long idOffset) {
         return Observable.fromCallable(() ->
-                database.artistsDAO().getUsersWithOffset(idOffset, Constants.GitHub.DEFAULT_PAGINATION));
+                database.usersDAO().getUsersWithOffset(idOffset, Constants.GitHub.DEFAULT_PAGINATION));
+    }
+
+    @Override
+    public void deleteAll() {
+        database.usersDAO().deleteAll();
     }
 
 }
