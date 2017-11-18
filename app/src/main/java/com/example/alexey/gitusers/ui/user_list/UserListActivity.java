@@ -36,9 +36,6 @@ public class UserListActivity extends BaseActivity implements UserListMvpContrac
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
-    @BindView(R.id.nested_scroll_view)
-    NestedScrollView nestedScrollView;
-
     @BindView(R.id.error_container)
     ViewGroup errorContainer;
 
@@ -66,13 +63,13 @@ public class UserListActivity extends BaseActivity implements UserListMvpContrac
         presenter.takeView(this);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getString(R.string.app_name));
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(getString(R.string.app_name));
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(presenter.getAdapter());
-        recyclerView.setNestedScrollingEnabled(false);
-        nestedScrollView.setOnScrollChangeListener(presenter.getOnScrollListener());
+        recyclerView.addOnScrollListener(presenter.getOnScrollListener());
     }
 
     @Override
@@ -88,6 +85,11 @@ public class UserListActivity extends BaseActivity implements UserListMvpContrac
     public void showFailureMessage(String message) {
         errorContainer.setVisibility(View.VISIBLE);
         errorMessage.setText(message);
+    }
+
+    @Override
+    public LinearLayoutManager getLayoutManager() {
+        return layoutManager;
     }
 
 }

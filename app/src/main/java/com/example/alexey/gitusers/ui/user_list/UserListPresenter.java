@@ -1,6 +1,5 @@
 package com.example.alexey.gitusers.ui.user_list;
 
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,7 +32,7 @@ public class UserListPresenter<V extends UserListMvpContract.View> extends BaseP
     private UsersAdapter adapter;
 
     @Inject
-    public UserListPresenter(Repository dataSource, SchedulerProvider schedulerProvider,
+    UserListPresenter(Repository dataSource, SchedulerProvider schedulerProvider,
                              CompositeDisposable compositeDisposable, UsersAdapter adapter) {
         super(dataSource, schedulerProvider, compositeDisposable);
 
@@ -42,7 +41,7 @@ public class UserListPresenter<V extends UserListMvpContract.View> extends BaseP
 
     @Override
     protected void onViewPrepared() {
-        scrollListener = new PaginationScrollListener();
+        scrollListener = new PaginationScrollListener(getView().getLayoutManager());
 
         loadUsers(new UserLoadCallback() {
             @Override
@@ -50,7 +49,6 @@ public class UserListPresenter<V extends UserListMvpContract.View> extends BaseP
                 if (users == null || users.size() == 0) return;
 
                 lastId = users.get(users.size() - 1).getId() + 1;
-
                 adapter.updateDataSet(users);
             }
 
@@ -102,11 +100,15 @@ public class UserListPresenter<V extends UserListMvpContract.View> extends BaseP
     }
 
     @Override
-    public NestedScrollView.OnScrollChangeListener getOnScrollListener() {
+    public RecyclerView.OnScrollListener getOnScrollListener() {
         return scrollListener;
     }
 
     private class PaginationScrollListener extends ScrollListener {
+
+        PaginationScrollListener(LinearLayoutManager layoutManager) {
+            super(layoutManager);
+        }
 
         @Override
         protected void loadMoreItems() {

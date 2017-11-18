@@ -8,7 +8,7 @@ public interface Constants {
 
     interface GitHub {
 
-        int DEFAULT_PAGINATION = 30;
+        int DEFAULT_PAGINATION = 100;
 
     }
 

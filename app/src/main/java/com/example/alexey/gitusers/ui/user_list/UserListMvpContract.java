@@ -1,6 +1,7 @@
 package com.example.alexey.gitusers.ui.user_list;
 
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.alexey.gitusers.data.entity.local.User;
@@ -15,6 +16,7 @@ public interface UserListMvpContract {
 
         void showFailureMessage(String message);
 
+        LinearLayoutManager getLayoutManager();
     }
 
     interface Presenter<V extends View> extends BasePresenter<V> {
@@ -23,7 +25,7 @@ public interface UserListMvpContract {
 
         RecyclerView.Adapter getAdapter();
 
-        NestedScrollView.OnScrollChangeListener getOnScrollListener();
+        RecyclerView.OnScrollListener getOnScrollListener();
 
     }
 

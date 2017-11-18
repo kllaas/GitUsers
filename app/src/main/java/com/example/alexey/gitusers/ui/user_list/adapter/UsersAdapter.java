@@ -28,12 +28,9 @@ public class UsersAdapter extends BaseRecyclerViewAdapter<User, BaseViewHolder<U
 
     private boolean isLoadingAdded = false;
 
-    private Context context;
-
     @Inject
-    public UsersAdapter(List<User> items, Context context) {
+    public UsersAdapter(List<User> items) {
         super(items);
-        this.context = context;
         setHasStableIds(true);
     }
 

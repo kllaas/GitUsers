@@ -5,16 +5,27 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-public abstract class ScrollListener implements NestedScrollView.OnScrollChangeListener {
+public abstract class ScrollListener extends RecyclerView.OnScrollListener {
+
+    private LinearLayoutManager layoutManager;
+
+    public ScrollListener(LinearLayoutManager layoutManager) {
+        this.layoutManager = layoutManager;
+    }
 
     @Override
-    public void onScrollChange(NestedScrollView view, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-        if (isLoading() || view.getChildAt(view.getChildCount() - 1) == null) return;
+    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        super.onScrolled(recyclerView, dx, dy);
 
-        if ((scrollY >= (view.getChildAt(view.getChildCount() - 1).getMeasuredHeight() / 4 - view.getMeasuredHeight())) &&
-                scrollY > oldScrollY) {
+        int visibleItemCount = layoutManager.getChildCount();
+        int totalItemCount = layoutManager.getItemCount();
+        int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-            loadMoreItems();
+        if (!isLoading()) {
+            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                    && firstVisibleItemPosition >= 0) {
+                loadMoreItems();
+            }
         }
     }
 

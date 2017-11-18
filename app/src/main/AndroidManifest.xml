@@ -14,8 +14,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.example.alexey.gitusers.ui.user_list.UserListActivity"
-            android:screenOrientation="portrait">
+            android:name="com.example.alexey.gitusers.ui.user_list.UserListActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
