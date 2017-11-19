@@ -2,11 +2,11 @@ package com.example.alexey.gitusers.di.modules;
 
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.example.alexey.gitusers.data.entity.local.User;
-import com.example.alexey.gitusers.di.PerActivity;
+import com.example.alexey.gitusers.di.PerFragment;
 import com.example.alexey.gitusers.ui.user_list.UserListMvpContract;
 import com.example.alexey.gitusers.ui.user_list.UserListPresenter;
 
@@ -18,18 +18,18 @@ import dagger.Provides;
 import io.reactivex.disposables.CompositeDisposable;
 
 @Module
-@PerActivity
-public class ActivityModule {
+@PerFragment
+public class FragmentModule {
 
-    private AppCompatActivity activity;
+    private Fragment fragment;
 
-    public ActivityModule(AppCompatActivity activity) {
-        this.activity = activity;
+    public FragmentModule(Fragment fragment) {
+        this.fragment = fragment;
     }
 
     @Provides
     Context provideContext() {
-        return activity;
+        return fragment.getContext();
     }
 
     @Provides
@@ -45,7 +45,7 @@ public class ActivityModule {
 
     @Provides
     LinearLayoutManager provideLayoutManager() {
-        return new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false);
+        return new LinearLayoutManager(fragment.getContext(), LinearLayoutManager.VERTICAL, false);
     }
 
     @Provides

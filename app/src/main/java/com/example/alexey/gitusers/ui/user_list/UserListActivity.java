@@ -1,104 +1,34 @@
 package com.example.alexey.gitusers.ui.user_list;
 
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 
 import com.example.alexey.gitusers.R;
-import com.example.alexey.gitusers.data.entity.local.User;
 import com.example.alexey.gitusers.ui.base.BaseActivity;
-import com.example.alexey.gitusers.ui.user_list.adapter.UsersAdapter;
 
-import org.w3c.dom.Text;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UserListActivity extends BaseActivity implements UserListMvpContract.View {
+public class UserListActivity extends BaseActivity {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-
-    @BindView(R.id.error_container)
-    ViewGroup errorContainer;
-
-    @BindView(R.id.error_message)
-    TextView errorMessage;
-
-    @Inject
-    LinearLayoutManager layoutManager;
-
-    @Inject
-    UserListMvpContract.Presenter<UserListMvpContract.View> presenter;
+    private static final String TAG_USER_LIST_FRAGMENT = UserListFragment.class.getName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.user_list);
+        setContentView(R.layout.activity_user_list);
 
         setUnbinder(ButterKnife.bind(this));
 
-        getComponent().inject(this);
-    }
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG_USER_LIST_FRAGMENT);
 
-    @Override
-    protected void setUpViews() {
-        presenter.takeView(this);
+        if (fragment == null) {
+            fragment = UserListFragment.newInstance();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(getString(R.string.app_name));
-
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(presenter.getAdapter());
-        recyclerView.addOnScrollListener(presenter.getOnScrollListener());
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_refresh) {
-            presenter.refresh();
+            transaction.add(R.id.fragments_container, fragment, TAG_USER_LIST_FRAGMENT)
+                    .commit();
         }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.list_artist_menu, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public void showFailureMessage(String message) {
-        errorContainer.setVisibility(View.VISIBLE);
-        errorMessage.setText(message);
-    }
-
-    @Override
-    public LinearLayoutManager getLayoutManager() {
-        return layoutManager;
     }
 
 }

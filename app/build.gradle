@@ -68,6 +68,7 @@ dependencies {
     // RxJava
     compile "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroid"
     compile "io.reactivex.rxjava2:rxjava:$rootProject.rxJava"
+    compile 'com.l4digital.rxloader:rxloader:2.1.0'
 
     // JSON parser (Gson)
     compile "com.google.code.gson:gson:$rootProject.gsonVersion"

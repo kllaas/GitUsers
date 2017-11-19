@@ -2,16 +2,7 @@ package com.example.alexey.gitusers.ui.base.adapter;
 
 import android.support.v7.widget.RecyclerView;
 
-import com.example.alexey.gitusers.data.entity.local.User;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.concurrent.Callable;
-
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public abstract class BaseRecyclerViewAdapter<T, VH extends BaseViewHolder<T>>
         extends RecyclerView.Adapter<VH> {
@@ -19,6 +10,8 @@ public abstract class BaseRecyclerViewAdapter<T, VH extends BaseViewHolder<T>>
     protected OnClick<T> onClick;
 
     protected List<T> items;
+
+    protected RecyclerView recyclerView;
 
     public BaseRecyclerViewAdapter(List<T> items) {
         this.items = items;
@@ -31,7 +24,8 @@ public abstract class BaseRecyclerViewAdapter<T, VH extends BaseViewHolder<T>>
 
     public void addItem(T item) {
         items.add(item);
-        notifyItemInserted(items.size() - 1);
+
+        recyclerView.post(() -> notifyItemInserted(items.size() - 1));
     }
 
     public void remove(T item) {
@@ -39,12 +33,16 @@ public abstract class BaseRecyclerViewAdapter<T, VH extends BaseViewHolder<T>>
         if (position < 0) return;
 
         items.remove(position);
-        notifyItemRemoved(position);
+        recyclerView.post(() -> notifyItemRemoved(position));
     }
 
     public void updateDataSet(List<T> items) {
         this.items = items;
-        notifyDataSetChanged();
+        recyclerView.post(this::notifyDataSetChanged);
+    }
+
+    public List<T> getAll() {
+        return items;
     }
 
     public T getItem(int position) {
@@ -63,11 +61,17 @@ public abstract class BaseRecyclerViewAdapter<T, VH extends BaseViewHolder<T>>
         int positionToInset = getItemCount() + 1;
 
         items.addAll(itemsToAdd);
-        notifyItemRangeInserted(positionToInset, itemsToAdd.size());
+
+        recyclerView.post(() -> notifyItemRangeInserted(positionToInset, itemsToAdd.size()));
     }
 
     public void clearAll() {
         items.clear();
-        notifyDataSetChanged();
+
+        recyclerView.post(this::notifyDataSetChanged);
+    }
+
+    public void setRecyclerView(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
     }
 }

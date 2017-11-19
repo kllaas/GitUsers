@@ -26,8 +26,8 @@ public class RemoteRepository implements RemoteSource {
     }
 
     @Override
-    public Observable<List<User>> fetchUsers(long page) {
-        return gitHubService.getUsers(page, Constants.GitHub.DEFAULT_PAGINATION);
+    public Observable<List<User>> fetchUsers(long since) {
+        return gitHubService.getUsers(since, Constants.GitHub.DEFAULT_PAGINATION);
     }
 
 }

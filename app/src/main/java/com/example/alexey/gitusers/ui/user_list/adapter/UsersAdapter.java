@@ -1,10 +1,9 @@
 package com.example.alexey.gitusers.ui.user_list.adapter;
 
-import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -13,6 +12,7 @@ import com.example.alexey.gitusers.R;
 import com.example.alexey.gitusers.data.entity.local.User;
 import com.example.alexey.gitusers.ui.base.adapter.BaseRecyclerViewAdapter;
 import com.example.alexey.gitusers.ui.base.adapter.BaseViewHolder;
+import com.example.alexey.gitusers.ui.user_list.PaginationCallback;
 
 import java.util.List;
 
@@ -27,9 +27,12 @@ public class UsersAdapter extends BaseRecyclerViewAdapter<User, BaseViewHolder<U
     private static final int LOADING = 1;
 
     private boolean isLoadingAdded = false;
+    private boolean errorOccurred = false;
+
+    private PaginationCallback callback;
 
     @Inject
-    public UsersAdapter(List<User> items) {
+    UsersAdapter(List<User> items) {
         super(items);
         setHasStableIds(true);
     }
@@ -65,14 +68,34 @@ public class UsersAdapter extends BaseRecyclerViewAdapter<User, BaseViewHolder<U
 
     public void addLoadingFooter() {
         isLoadingAdded = true;
-//        addItem(new User());
+        addItem(new User());
     }
 
     public void removeLoadingFooter() {
+        if (!isLoadingAdded) return;
         isLoadingAdded = false;
-//
-//        User itemToRemove = getItem(items.size() - 1);
-//        remove(itemToRemove);
+
+        User itemToRemove = getItem(items.size() - 1);
+        remove(itemToRemove);
+    }
+
+    public void toggleRetry(boolean show) {
+        errorOccurred = show;
+
+        recyclerView.post(() -> notifyItemChanged(items.size() - 1));
+    }
+
+    public void setCallback(PaginationCallback callback) {
+        this.callback = callback;
+    }
+
+    public boolean isErrorOccurred() {
+        return errorOccurred;
+    }
+
+    public void setErrorOccurred(boolean errorOccurred) {
+        this.errorOccurred = errorOccurred;
+        isLoadingAdded = errorOccurred;
     }
 
     class UserViewHolder extends BaseViewHolder<User> {
@@ -88,12 +111,12 @@ public class UsersAdapter extends BaseRecyclerViewAdapter<User, BaseViewHolder<U
         }
 
         @Override
-        protected void bind(User artist) {
-            login.setText(artist.getLogin());
+        protected void bind(User user) {
+            login.setText(user.getLogin());
 
-            if (artist.getUrlToImage() != null)
+            if (user.getUrlToImage() != null)
                 Glide.with(itemView.getContext())
-                        .load(artist.getUrlToImage())
+                        .load(user.getUrlToImage())
                         .asBitmap()
                         .fitCenter()
                         .into(image);
@@ -105,12 +128,30 @@ public class UsersAdapter extends BaseRecyclerViewAdapter<User, BaseViewHolder<U
         @BindView(R.id.progress_bar)
         ProgressBar progressBar;
 
+        @BindView(R.id.try_again)
+        Button tryAgain;
+
+        @BindView(R.id.error_message)
+        TextView errorMessage;
+
         LoadingViewHolder(View itemView) {
             super(itemView);
         }
 
         @Override
-        protected void bind(User artist) {}
+        protected void bind(User user) {
+            toggleError(errorOccurred);
+            tryAgain.setOnClickListener(view -> {
+                callback.onRetryClick();
+                toggleError(false);
+            });
+        }
+
+        public void toggleError(boolean error) {
+            errorMessage.setVisibility(error ? View.VISIBLE : View.GONE);
+            tryAgain.setVisibility(error ? View.VISIBLE : View.GONE);
+            progressBar.setVisibility(error ? View.GONE : View.VISIBLE);
+        }
     }
 
 }

@@ -1,7 +1,7 @@
 package com.example.alexey.gitusers.data.entity.mapper;
 
 
-import com.example.alexey.gitusers.data.entity.remote.UserRemote;
+import com.example.alexey.gitusers.data.entity.local.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -15,12 +15,12 @@ import java.lang.reflect.Type;
  * Created by alexey
  */
 
-public class UserDeserializer implements JsonDeserializer<UserRemote> {
+public class UserDeserializer implements JsonDeserializer<User> {
 
     @Override
-    public UserRemote deserialize(JsonElement json, Type typeOfT,
+    public User deserialize(JsonElement json, Type typeOfT,
                                   JsonDeserializationContext context) throws JsonParseException {
-        Type listType = new TypeToken<UserRemote>() {}.getType();
+        Type listType = new TypeToken<User>() {}.getType();
 
         return new Gson().fromJson(json, listType);
     }

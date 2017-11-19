@@ -27,7 +27,6 @@ public class ServiceGenerator {
         HttpUrl originalUrl = original.url();
 
         HttpUrl url = originalUrl.newBuilder()
-                .addQueryParameter("client_id", "cb742ad009a11ee5df749e4735f24b9a8de7f238")
                 .build();
 
         Request.Builder requestBuilder = original.newBuilder()

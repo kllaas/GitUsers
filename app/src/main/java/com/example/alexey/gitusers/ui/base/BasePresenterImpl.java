@@ -31,8 +31,8 @@ public abstract class BasePresenterImpl<V extends BaseView> implements BasePrese
     }
 
     @Override
-    public void dropView() {
-        getCompositeDisposable().dispose();
+    public void onDispose() {
+        view = null;
     }
 
     protected abstract void onViewPrepared();

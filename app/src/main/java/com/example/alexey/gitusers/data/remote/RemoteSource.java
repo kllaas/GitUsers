@@ -9,6 +9,6 @@ import io.reactivex.Observable;
 
 public interface RemoteSource {
 
-    Observable<List<User>> fetchUsers(long page);
+    Observable<List<User>> fetchUsers(long since);
 
 }

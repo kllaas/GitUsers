@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 
+
 public class Repository {
 
     private LocalRepository localRepository;
@@ -28,8 +29,8 @@ public class Repository {
         this.schedulerProvider = schedulerProvider;
     }
 
-    public Observable<List<User>> fetchUsers(long page) {
-        return getLocalAlbumsObservable(page)
+    public Observable<List<User>> fetchUsers(long since) {
+        return getLocalUsersObservable(since)
                 .observeOn(schedulerProvider.io())
                 .flatMap(localUsers -> {
 
@@ -37,27 +38,26 @@ public class Repository {
                         return Observable.fromCallable(() -> localUsers);
                     }
 
-                    return getRemoteUsersObservable(page);
+                    return getRemoteUsersObservable(since);
                 });
     }
 
-    private Observable<List<User>> getRemoteUsersObservable(long page) {
-        return remoteRepository.fetchUsers(page)
+    private Observable<List<User>> getRemoteUsersObservable(long since) {
+        return remoteRepository.fetchUsers(since)
                 .subscribeOn(schedulerProvider.io())
-                .doOnNext(artists -> localRepository.saveUsers(artists))
-                .onErrorResumeNext(Observable.empty());
+                .doOnNext(artists -> localRepository.saveUsers(artists));
     }
 
-    private Observable<List<User>> getLocalAlbumsObservable(long page) {
-        return localRepository.getUsers(page)
+    private Observable<List<User>> getLocalUsersObservable(long since) {
+        return localRepository.getUsers(since)
                 .subscribeOn(schedulerProvider.computation());
     }
 
-    public Observable<List<User>> refresh(long id) {
+    public Observable<List<User>> refresh(long since) {
         return Observable.fromCallable(() -> {
             localRepository.deleteAll();
-            return id;
+            return since;
         }).observeOn(schedulerProvider.io())
-                .flatMap(var -> getRemoteUsersObservable(id));
+                .flatMap(var -> getRemoteUsersObservable(since));
     }
 }

@@ -3,8 +3,8 @@ package com.example.alexey.gitusers.di.modules;
 import android.app.Application;
 import android.arch.persistence.room.Room;
 
+import com.example.alexey.gitusers.data.entity.local.User;
 import com.example.alexey.gitusers.data.entity.mapper.UserDeserializer;
-import com.example.alexey.gitusers.data.entity.remote.UserRemote;
 import com.example.alexey.gitusers.data.local.AppDatabase;
 import com.example.alexey.gitusers.data.local.UserDAO;
 import com.example.alexey.gitusers.utils.network.NetworkUtils;
@@ -45,7 +45,7 @@ public class AppModule {
     @Provides
     Gson provideGson() {
         return new GsonBuilder()
-                .registerTypeAdapter(UserRemote.class, new UserDeserializer())
+                .registerTypeAdapter(User.class, new UserDeserializer())
                 .create();
     }
 
