@@ -1,5 +1,6 @@
 package com.example.alexey.gitusers.ui.user_list.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
+
 public class UsersAdapter extends BaseRecyclerViewAdapter<User, BaseViewHolder<User>> {
 
     private static final int ITEM = 0;
@@ -34,7 +37,6 @@ public class UsersAdapter extends BaseRecyclerViewAdapter<User, BaseViewHolder<U
     @Inject
     UsersAdapter(List<User> items) {
         super(items);
-        setHasStableIds(true);
     }
 
     @Override
@@ -57,11 +59,6 @@ public class UsersAdapter extends BaseRecyclerViewAdapter<User, BaseViewHolder<U
     }
 
     @Override
-    public long getItemId(int position) {
-        return items.get(position).getId();
-    }
-
-    @Override
     public int getItemViewType(int position) {
         return (position == items.size() - 1 && isLoadingAdded) ? LOADING : ITEM;
     }
@@ -69,6 +66,18 @@ public class UsersAdapter extends BaseRecyclerViewAdapter<User, BaseViewHolder<U
     public void addLoadingFooter() {
         isLoadingAdded = true;
         addItem(new User());
+    }
+
+    @Override
+    public void remove(User item) {
+        Log.d(TAG, "remove: " + item.getId());
+        super.remove(item);
+    }
+
+    @Override
+    public void addItem(User item) {
+        Log.d(TAG, "addItem: " + item.getId());
+        super.addItem(item);
     }
 
     public void removeLoadingFooter() {

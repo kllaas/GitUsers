@@ -26,7 +26,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public class UserListPresenter<V extends UserListMvpContract.View> extends BasePresenterImpl<V>
         implements UserListMvpContract.Presenter<V>, PaginationCallback {
 
-    private static final int ID_START = 1;
+    private static final int ID_START = 0;
     private static final int ID_LOADER = 1;
 
     private boolean isLoading = false;

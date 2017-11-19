@@ -16,7 +16,7 @@ import java.util.List;
 @Dao
 public interface UserDAO {
 
-    @Query("SELECT * FROM users WHERE id >= :offset LIMIT :count")
+    @Query("SELECT * FROM users WHERE id > :offset LIMIT :count")
     List<User> getUsersWithOffset(long offset, int count);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
